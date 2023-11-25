@@ -1,0 +1,59 @@
+# Función para encontrar parejas estables
+Función Parejas(hombres, mujeres, pref_hombres, pref_mujeres):
+    parejas_hombres = {}  # Se almacenan las parejas de los hombres
+    
+    Mientras hombres:
+        # El primer elemento se obtiene y se pasa a la variable hombre
+        h = hombres.pop(0)
+        pref_hombre = pref_hombres[h]  # Lista de preferencias del hombre
+        # Se elige a la primer mujer de las preferencias del hombre, se obtiene y luego se elimina por el pop
+        m = pref_hombre.pop(0)
+        # Se obtiene la pareja de la mujer mediante parejas_hombres
+        parejas_actual = parejas_hombres.get(m)
+        Si parejas_actual es None:  # Si no tiene pareja
+            parejas_hombres[m] = h  # Se empareja con un hombre
+        Sino:
+            pref_mujer = pref_mujeres[m]  # Preferencias de mujeres
+            # Se compara la posición de la pareja actual y la posición del hombre
+            Si pref_mujer.index(parejas_actual) > pref_mujer.index(h):
+                parejas_hombres[m] = h  # Se asigna a un hombre como pareja de una mujer
+                # La ex pareja se regresa a la lista de hombres para tratar de emparejarse otra vez
+                hombres.append(parejas_actual)
+
+    # Se verifica si alguien se quedó sin pareja
+    hombres_sin_pareja = [h for h in hombres if h not in parejas_hombres.values()]
+    Para cada h en hombres_sin_pareja:  # Se itera sobre los hombres sin pareja
+        # Mujeres disponibles
+        mujer_disponible = next((m for m in mujeres if h in pref_mujeres[m]), None)
+        Si mujer_disponible is not None:  # Se encontró alguien disponible
+            parejas_hombres[mujer_disponible] = h  # Se asigna a un hombre
+
+    Devolver parejas_hombres  # Todas las parejas formadas
+
+# Listas de hombres y mujeres
+hombres = ['n1', 'n2', 'n3', 'n4', 'n5']
+mujeres = ['k1', 'k2', 'k3', 'k4', 'k5']
+
+# Preferencias de la que es más compatible hasta la menos:
+pref_hombres = {
+    'n1': ['k3', 'k2', 'k5', 'k1', 'k4'],
+    'n2': ['k2', 'k1', 'k3', 'k5', 'k4'],
+    'n3': ['k4', 'k2', 'k1', 'k3', 'k5'],
+    'n4': ['k5', 'k3', 'k2', 'k4', 'k1'],
+    'n5': ['k1', 'k3', 'k2', 'k4', 'k5'],
+}
+
+pref_mujeres = {
+    'k1': ['n2', 'n5', 'n4', 'n1', 'n3'],
+    'k2': ['n1', 'n3', 'n5', 'n2', 'n4'],
+    'k3': ['n1', 'n4', 'n5', 'n3', 'n2'],
+    'k4': ['n4', 'n3', 'n5', 'n1', 'n2'],
+    'k5': ['n3', 'n1', 'n5', 'n2', 'n4'],
+}
+
+# Llamada a la función
+parejas_estables = Parejas(hombres, mujeres, pref_hombres, pref_mujeres)
+
+# Imprimir las parejas formadas
+Para cada mujer, hombre en parejas_estables.items():
+    Imprimir(f"{hombre} y {mujer}")
